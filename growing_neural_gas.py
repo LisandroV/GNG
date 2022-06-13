@@ -32,9 +32,11 @@ class GNG:
         self.d = d
         self.max_nodes = max_nodes
         self.num_of_input_signals = 0
-
         self.pos = None
+        self.__init_graph__()
 
+    def __init_graph__(self):
+        """Initializes the graph that will fit the data"""
         train_data_positions = nx.get_node_attributes(self.data_graph, "pos")
         node1 = random.choice(list(train_data_positions.values()))
         node2 = random.choice(list(train_data_positions.values()))
@@ -42,7 +44,6 @@ class GNG:
         if node1[0] == node2[0] and node1[1] == node2[1]:
             raise Exception("The same node was selected on the random initial setup.")
 
-        # initialize here
         self.count = 0
         self.graph.add_node(self.count, pos=(node1[0], node1[1]), error=0)
         self.count += 1

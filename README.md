@@ -22,7 +22,7 @@ Usage:
 
    ![](https://github.com/ansrivas/GNG/raw/master/output.gif)
 
-4. To reformat the code automatically run:
+4. To reformat the code automatically:
 
    ```
    black .
