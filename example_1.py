@@ -1,11 +1,10 @@
-import numpy as np
-import networkx as nx
-import imageio
-from matplotlib import pylab as pl
-import re
-import glob
-from past.builtins import xrange
 from future.utils import iteritems
+from past.builtins import xrange
+import glob
+import imageio
+import networkx as nx
+import numpy as np
+import re
 
 from growing_neural_gas import GNG
 
@@ -83,11 +82,10 @@ def convert_images_to_gif(output_images_dir, output_gif):
 
 
 if __name__ == "__main__":
-
     data = load_graph()
     grng = GNG(data,G)
-    output_images_dir = 'images'
-    output_gif = "output.gif"
+    output_images_dir = 'images/example_1'
+    output_gif = "output_1.gif"
     if grng is not None:
-        grng.train(max_iterations=10000)
+        grng.train(max_iterations=3000,output_images_dir=output_images_dir)
         convert_images_to_gif(output_images_dir, output_gif)
