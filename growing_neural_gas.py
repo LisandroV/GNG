@@ -32,7 +32,6 @@ class GNG:
         self.d = d
         self.max_nodes = max_nodes
         self.num_of_input_signals = 0
-        self.pos = None
         self.__init_graph__()
 
     def __init_graph__(self):
@@ -56,9 +55,9 @@ class GNG:
 
     def determine_2closest_vertices(self, curnode):
         """Where this curnode is actually the x,y index of the data we want to analyze."""
-        self.pos = nx.get_node_attributes(self.graph, "pos")
+        pos = nx.get_node_attributes(self.graph, "pos")
         templist = []
-        for node, position in iteritems(self.pos):
+        for node, position in iteritems(pos):
             dist = self.distance(curnode, position)
             templist.append([node, dist])
 
@@ -105,15 +104,15 @@ class GNG:
         self.graph.add_node(winnernode, error=newerror)
 
         # move the winner node towards current node
-        self.pos = nx.get_node_attributes(self.graph, "pos")
-        newposition = self.get_new_position(self.pos[winnernode], curnode)
+        pos = nx.get_node_attributes(self.graph, "pos")
+        newposition = self.get_new_position(pos[winnernode], curnode)
         self.graph.add_node(winnernode, pos=newposition)
 
         # now update all the neighbors distances and their ages
         neighbors = nx.all_neighbors(self.graph, winnernode)
         age_of_edges = nx.get_edge_attributes(self.graph, "age")
         for n in neighbors:
-            newposition = self.get_new_position_neighbors(self.pos[n], curnode)
+            newposition = self.get_new_position_neighbors(pos[n], curnode)
             self.graph.add_node(n, pos=newposition)
             key = (int(winnernode), n)
             if key in age_of_edges:
@@ -217,9 +216,9 @@ class GNG:
                             max_error_neighbor = n
 
                     # insert a new unit half way between these two
-                    self.pos = nx.get_node_attributes(self.graph, "pos")
+                    pos = nx.get_node_attributes(self.graph, "pos")
 
-                    newnodepos = self.get_average_dist(self.pos[node_largest_error], self.pos[max_error_neighbor])
+                    newnodepos = self.get_average_dist(pos[node_largest_error], pos[max_error_neighbor])
                     self.count = self.count + 1
                     newnode = self.count
                     self.graph.add_node(newnode, pos=newnodepos)
