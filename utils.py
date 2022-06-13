@@ -1,5 +1,7 @@
 import glob
 import imageio
+import networkx as nx
+import numpy as np
 import re
 
 
@@ -24,3 +26,20 @@ def convert_images_to_gif(output_images_dir, output_gif):
     file_names = sort_nicely(list_images)
     images = [imageio.imread(fn) for fn in file_names]
     imageio.mimsave(output_gif, images)
+
+
+def create_polygon_graph(coords: np.ndarray) -> nx.Graph:
+    """
+    Creates a graph with the coordinates.
+    The graph will be a polygon.
+    """
+    G = nx.Graph()
+    # add nodes
+    for index, p in enumerate(coords):
+        G.add_node(index, pos=tuple(p))
+
+    # add edges
+    num_points = len(coords)
+    for index in range(num_points):
+        G.add_edge(index, (index + 1) % num_points)
+    return G

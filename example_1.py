@@ -1,28 +1,21 @@
 from future.utils import iteritems
 from past.builtins import xrange
 import networkx as nx
-import numpy as np
 
 from growing_neural_gas import GNG
 import utils
 
-pos = None
-G = None
 
-
-def readFile():
+def readFile(filename: str):
     """Read the file and return the indices as list of lists."""
-    filename = "s.txt"
     with open(filename) as file:
         array2d = [[int(digit) for digit in line.split()] for line in file]
     return array2d
 
 
-def read_file_draw_graph() -> nx.Graph:
+def load_graph_from_file(filename: str) -> nx.Graph:
     """Create the graph and returns the networkx version of it 'G'."""
-    global pos
-    global G
-    array2d = readFile()
+    array2d = readFile(filename)
 
     ROW, COLUMN = len(array2d), len(array2d[0])
     count = 0
@@ -47,24 +40,10 @@ def read_file_draw_graph() -> nx.Graph:
     return G
 
 
-def load_graph():
-    """."""
-    global pos, G
-    G = read_file_draw_graph()
-
-    inList = []
-    for key, value in iteritems(pos):
-        inList.append([value[0], value[1]])
-
-    mat = np.array(inList, dtype="float64")
-    return mat
-
-
 if __name__ == "__main__":
-    data = load_graph()
-    grng = GNG(data, G)
+    G = load_graph_from_file("s.txt")
+    grng = GNG(G)
     output_images_dir = "images/example_1"
-    output_gif = "output_1.gif"
-    if grng is not None:
-        grng.train(max_iterations=3000, output_images_dir=output_images_dir)
-        utils.convert_images_to_gif(output_images_dir, output_gif)
+    output_gif = "output_example_1.gif"
+    grng.train(max_iterations=3000, output_images_dir=output_images_dir)
+    utils.convert_images_to_gif(output_images_dir, output_gif)

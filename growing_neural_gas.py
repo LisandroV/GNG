@@ -4,6 +4,7 @@ from matplotlib import pylab as pl
 import os
 from past.builtins import xrange
 from future.utils import iteritems
+import random
 
 
 class GNG:
@@ -11,7 +12,6 @@ class GNG:
 
     def __init__(
         self,
-        data,
         data_graph,
         eps_b=0.05,
         eps_n=0.0005,
@@ -23,7 +23,7 @@ class GNG:
     ):
         """."""
         self.graph = nx.Graph()
-        self.data = data
+        self.data_graph = data_graph
         self.eps_b = eps_b
         self.eps_n = eps_n
         self.max_age = max_age
@@ -32,17 +32,15 @@ class GNG:
         self.d = d
         self.max_nodes = max_nodes
         self.num_of_input_signals = 0
-        self.data_graph = data_graph
 
         self.pos = None
 
-        node1 = data[np.random.randint(0, len(data))]
-        node2 = data[np.random.randint(0, len(data))]
+        train_data_positions = nx.get_node_attributes(self.data_graph, "pos")
+        node1 = random.choice(list(train_data_positions.values()))
+        node2 = random.choice(list(train_data_positions.values()))
 
-        # make sure you dont select same positions
         if node1[0] == node2[0] and node1[1] == node2[1]:
-            print("Rerun ---------------> similar nodes selected")
-            return None
+            raise Exception("The same node was selected on the random initial setup.")
 
         # initialize here
         self.count = 0
@@ -194,7 +192,8 @@ class GNG:
 
         for i in xrange(1, max_iterations):
             print("Iterating..{0:d}/{1}".format(i, max_iterations))
-            for x in self.data:
+            # iterates over the (x,y) positions
+            for x in nx.get_node_attributes(self.data_graph, "pos").values():
                 self.update_winner(x)
 
                 # step 8: if number of input signals generated so far
@@ -203,9 +202,7 @@ class GNG:
                     errorvectors = nx.get_node_attributes(self.graph, "error")
                     import operator
 
-                    node_largest_error = max(
-                        iteritems(errorvectors), key=operator.itemgetter(1)
-                    )[0]
+                    node_largest_error = max(iteritems(errorvectors), key=operator.itemgetter(1))[0]
 
                     # find a node from neighbor of the node just found,
                     # with largest error
@@ -221,9 +218,7 @@ class GNG:
                     # insert a new unit half way between these two
                     self.pos = nx.get_node_attributes(self.graph, "pos")
 
-                    newnodepos = self.get_average_dist(
-                        self.pos[node_largest_error], self.pos[max_error_neighbor]
-                    )
+                    newnodepos = self.get_average_dist(self.pos[node_largest_error], self.pos[max_error_neighbor])
                     self.count = self.count + 1
                     newnode = self.count
                     self.graph.add_node(newnode, pos=newnodepos)

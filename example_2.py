@@ -1,4 +1,3 @@
-import networkx as nx
 import numpy as np
 
 from growing_neural_gas import GNG
@@ -58,19 +57,10 @@ if __name__ == "__main__":
             [239.01339427, 151.4838181],
         ]
     )
-    G = nx.Graph()
-    # add nodes
-    for index, p in enumerate(data):
-        G.add_node(index, pos=tuple(p))
+    G = utils.create_polygon_graph(data)
 
-    # add edges
-    num_points = len(data)
-    for index in range(num_points):
-        G.add_edge(index, (index + 1) % num_points)
-
-    grng = GNG(data, G, max_nodes=47)
+    grng = GNG(G, max_nodes=47)
     output_images_dir = "images/example_2"
-    output_gif = "output_2.gif"
-    if grng is not None:
-        grng.train(max_iterations=3000, output_images_dir=output_images_dir)
-        utils.convert_images_to_gif(output_images_dir, output_gif)
+    output_gif = "output_example_2.gif"
+    grng.train(max_iterations=3000, output_images_dir=output_images_dir)
+    utils.convert_images_to_gif(output_images_dir, output_gif)

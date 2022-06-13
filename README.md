@@ -15,7 +15,7 @@ Usage:
 2. execute:
 
    ```
-   python growing_neural_gas.py
+   python example_1.py
    ```
 
 3. You will see output after 10000 iterations as `output.gif`.
