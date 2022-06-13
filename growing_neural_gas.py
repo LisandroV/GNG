@@ -5,11 +5,22 @@ import os
 from past.builtins import xrange
 from future.utils import iteritems
 
-class GNG():
+
+class GNG:
     """."""
 
-    def __init__(self, data, data_graph, eps_b=0.05, eps_n=0.0005, max_age=25,
-                 lambda_=100, alpha=0.5, d=0.0005, max_nodes=100):
+    def __init__(
+        self,
+        data,
+        data_graph,
+        eps_b=0.05,
+        eps_n=0.0005,
+        max_age=25,
+        lambda_=100,
+        alpha=0.5,
+        d=0.0005,
+        max_nodes=100,
+    ):
         """."""
         self.graph = nx.Graph()
         self.data = data
@@ -42,11 +53,11 @@ class GNG():
 
     def distance(self, a, b):
         """Calculate distance between two points."""
-        return ((a[0] - b[0])**2 + (a[1] - b[1])**2)
+        return (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2
 
     def determine_2closest_vertices(self, curnode):
         """Where this curnode is actually the x,y index of the data we want to analyze."""
-        self.pos = nx.get_node_attributes(self.graph, 'pos')
+        self.pos = nx.get_node_attributes(self.graph, "pos")
         templist = []
         for node, position in iteritems(self.pos):
             dist = self.distance(curnode, position)
@@ -61,14 +72,20 @@ class GNG():
 
     def get_new_position(self, winnerpos, nodepos):
         """."""
-        move_delta = [self.eps_b * (nodepos[0] - winnerpos[0]), self.eps_b * (nodepos[1] - winnerpos[1])]
+        move_delta = [
+            self.eps_b * (nodepos[0] - winnerpos[0]),
+            self.eps_b * (nodepos[1] - winnerpos[1]),
+        ]
         newpos = [winnerpos[0] + move_delta[0], winnerpos[1] + move_delta[1]]
 
         return newpos
 
     def get_new_position_neighbors(self, neighborpos, nodepos):
         """."""
-        movement = [self.eps_n * (nodepos[0] - neighborpos[0]), self.eps_n * (nodepos[1] - neighborpos[1])]
+        movement = [
+            self.eps_n * (nodepos[0] - neighborpos[0]),
+            self.eps_n * (nodepos[1] - neighborpos[1]),
+        ]
         newpos = [neighborpos[0] + movement[0], neighborpos[1] + movement[1]]
 
         return newpos
@@ -81,7 +98,7 @@ class GNG():
         winnernode2 = winner2[0]
         win_dist_from_node = winner1[1]
 
-        errorvectors = nx.get_node_attributes(self.graph, 'error')
+        errorvectors = nx.get_node_attributes(self.graph, "error")
 
         error1 = errorvectors[winner1[0]]
         # update the new error
@@ -89,13 +106,13 @@ class GNG():
         self.graph.add_node(winnernode, error=newerror)
 
         # move the winner node towards current node
-        self.pos = nx.get_node_attributes(self.graph, 'pos')
+        self.pos = nx.get_node_attributes(self.graph, "pos")
         newposition = self.get_new_position(self.pos[winnernode], curnode)
         self.graph.add_node(winnernode, pos=newposition)
 
         # now update all the neighbors distances and their ages
         neighbors = nx.all_neighbors(self.graph, winnernode)
-        age_of_edges = nx.get_edge_attributes(self.graph, 'age')
+        age_of_edges = nx.get_edge_attributes(self.graph, "age")
         for n in neighbors:
             newposition = self.get_new_position_neighbors(self.pos[n], curnode)
             self.graph.add_node(n, pos=newposition)
@@ -108,14 +125,14 @@ class GNG():
 
         # no sense in what I am writing here, but with algorithm it goes perfect
         # if winnner and 2nd winner are connected, update their age to zero
-        if (self.graph.get_edge_data(winnernode, winnernode2) is not None):
+        if self.graph.get_edge_data(winnernode, winnernode2) is not None:
             self.graph.add_edge(winnernode, winnernode2, age=0)
         else:
             # else create an edge between them
             self.graph.add_edge(winnernode, winnernode2, age=0)
 
         # if there are ages more than maximum allowed age, remove them
-        age_of_edges = nx.get_edge_attributes(self.graph, 'age')
+        age_of_edges = nx.get_edge_attributes(self.graph, "age")
         for edge, age in iteritems(age_of_edges):
 
             if age > self.max_age:
@@ -133,23 +150,39 @@ class GNG():
 
         return av_dist
 
-    def save_img(self, fignum, output_images_dir='images'):
+    def save_img(self, fignum, output_images_dir="images"):
         """."""
         fig = pl.figure(fignum)
         ax = fig.add_subplot(111)
 
-        pos = nx.get_node_attributes(self.data_graph, 'pos')
-        nx.draw(self.data_graph, pos, node_color='#ffffff', with_labels=False, node_size=100, alpha=0.5, width=1.5)
+        pos = nx.get_node_attributes(self.data_graph, "pos")
+        nx.draw(
+            self.data_graph,
+            pos,
+            node_color="#ffffff",
+            with_labels=False,
+            node_size=100,
+            alpha=0.5,
+            width=1.5,
+        )
 
-        position = nx.get_node_attributes(self.graph, 'pos')
-        nx.draw(self.graph, position, node_color='r', node_size=100, with_labels=False, edge_color='b', width=1.5)
-        pl.title('Growing Neural Gas')
+        position = nx.get_node_attributes(self.graph, "pos")
+        nx.draw(
+            self.graph,
+            position,
+            node_color="r",
+            node_size=100,
+            with_labels=False,
+            edge_color="b",
+            width=1.5,
+        )
+        pl.title("Growing Neural Gas")
         pl.savefig("{0}/{1}.png".format(output_images_dir, str(fignum)))
 
         pl.clf()
         pl.close(fignum)
 
-    def train(self, max_iterations=10000, output_images_dir='images'):
+    def train(self, max_iterations=10000, output_images_dir="images"):
         """."""
 
         if not os.path.isdir(output_images_dir):
@@ -167,25 +200,30 @@ class GNG():
                 # step 8: if number of input signals generated so far
                 if i % self.lambda_ == 0 and len(self.graph.nodes()) <= self.max_nodes:
                     # find a node with the largest error
-                    errorvectors = nx.get_node_attributes(self.graph, 'error')
+                    errorvectors = nx.get_node_attributes(self.graph, "error")
                     import operator
-                    node_largest_error = max(iteritems(errorvectors), key=operator.itemgetter(1))[0]
+
+                    node_largest_error = max(
+                        iteritems(errorvectors), key=operator.itemgetter(1)
+                    )[0]
 
                     # find a node from neighbor of the node just found,
                     # with largest error
                     neighbors = self.graph.neighbors(node_largest_error)
                     max_error_neighbor = None
                     max_error = -1
-                    errorvectors = nx.get_node_attributes(self.graph, 'error')
+                    errorvectors = nx.get_node_attributes(self.graph, "error")
                     for n in neighbors:
                         if errorvectors[n] > max_error:
                             max_error = errorvectors[n]
                             max_error_neighbor = n
 
                     # insert a new unit half way between these two
-                    self.pos = nx.get_node_attributes(self.graph, 'pos')
+                    self.pos = nx.get_node_attributes(self.graph, "pos")
 
-                    newnodepos = self.get_average_dist(self.pos[node_largest_error], self.pos[max_error_neighbor])
+                    newnodepos = self.get_average_dist(
+                        self.pos[node_largest_error], self.pos[max_error_neighbor]
+                    )
                     self.count = self.count + 1
                     newnode = self.count
                     self.graph.add_node(newnode, pos=newnodepos)
@@ -199,7 +237,7 @@ class GNG():
                     self.graph.remove_edge(max_error_neighbor, node_largest_error)
 
                     # decrease error variable of other two nodes by multiplying with alpha
-                    errorvectors = nx.get_node_attributes(self.graph, 'error')
+                    errorvectors = nx.get_node_attributes(self.graph, "error")
                     error_max_node = self.alpha * errorvectors[node_largest_error]
                     error_max_second = self.alpha * max_error
                     self.graph.add_node(max_error_neighbor, error=error_max_second)
@@ -212,7 +250,7 @@ class GNG():
                     self.save_img(fignum, output_images_dir)
 
                 # step 9: Decrease all error variables
-                errorvectors = nx.get_node_attributes(self.graph, 'error')
+                errorvectors = nx.get_node_attributes(self.graph, "error")
                 for i in self.graph.nodes():
                     olderror = errorvectors[i]
                     newerror = olderror - self.d * olderror

@@ -2,11 +2,16 @@ import glob
 import imageio
 import re
 
+
 def sort_nicely(limages):
     """."""
-    def convert(text): return int(text) if text.isdigit() else text
 
-    def alphanum_key(key): return [convert(c) for c in re.split('([0-9]+)', key)]
+    def convert(text):
+        return int(text) if text.isdigit() else text
+
+    def alphanum_key(key):
+        return [convert(c) for c in re.split("([0-9]+)", key)]
+
     limages = sorted(limages, key=alphanum_key)
     return limages
 

@@ -12,7 +12,7 @@ G = None
 
 def readFile():
     """Read the file and return the indices as list of lists."""
-    filename = 's.txt'
+    filename = "s.txt"
     with open(filename) as file:
         array2d = [[int(digit) for digit in line.split()] for line in file]
     return array2d
@@ -35,7 +35,7 @@ def read_file_draw_graph() -> nx.Graph:
                 G.add_node(count, pos=(j, i))
                 count += 1
 
-    pos = nx.get_node_attributes(G, 'pos')
+    pos = nx.get_node_attributes(G, "pos")
 
     for index in pos.keys():
         for index2 in pos.keys():
@@ -56,14 +56,15 @@ def load_graph():
     for key, value in iteritems(pos):
         inList.append([value[0], value[1]])
 
-    mat = np.array(inList, dtype='float64')
+    mat = np.array(inList, dtype="float64")
     return mat
+
 
 if __name__ == "__main__":
     data = load_graph()
-    grng = GNG(data,G)
-    output_images_dir = 'images/example_1'
+    grng = GNG(data, G)
+    output_images_dir = "images/example_1"
     output_gif = "output_1.gif"
     if grng is not None:
-        grng.train(max_iterations=3000,output_images_dir=output_images_dir)
+        grng.train(max_iterations=3000, output_images_dir=output_images_dir)
         utils.convert_images_to_gif(output_images_dir, output_gif)
