@@ -1,12 +1,10 @@
 from future.utils import iteritems
 from past.builtins import xrange
-import glob
-import imageio
 import networkx as nx
 import numpy as np
-import re
 
 from growing_neural_gas import GNG
+import utils
 
 pos = None
 G = None
@@ -61,26 +59,6 @@ def load_graph():
     mat = np.array(inList, dtype='float64')
     return mat
 
-
-def sort_nicely(limages):
-    """."""
-    def convert(text): return int(text) if text.isdigit() else text
-
-    def alphanum_key(key): return [convert(c) for c in re.split('([0-9]+)', key)]
-    limages = sorted(limages, key=alphanum_key)
-    return limages
-
-
-def convert_images_to_gif(output_images_dir, output_gif):
-    """Convert a list of images to a gif."""
-
-    image_dir = "{0}/*.png".format(output_images_dir)
-    list_images = glob.glob(image_dir)
-    file_names = sort_nicely(list_images)
-    images = [imageio.imread(fn) for fn in file_names]
-    imageio.mimsave(output_gif, images)
-
-
 if __name__ == "__main__":
     data = load_graph()
     grng = GNG(data,G)
@@ -88,4 +66,4 @@ if __name__ == "__main__":
     output_gif = "output_1.gif"
     if grng is not None:
         grng.train(max_iterations=3000,output_images_dir=output_images_dir)
-        convert_images_to_gif(output_images_dir, output_gif)
+        utils.convert_images_to_gif(output_images_dir, output_gif)

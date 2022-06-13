@@ -1,28 +1,8 @@
-import glob
-import imageio
 import networkx as nx
 import numpy as np
-import re
 
 from growing_neural_gas import GNG
-
-def sort_nicely(limages):
-    """."""
-    def convert(text): return int(text) if text.isdigit() else text
-
-    def alphanum_key(key): return [convert(c) for c in re.split('([0-9]+)', key)]
-    limages = sorted(limages, key=alphanum_key)
-    return limages
-
-
-def convert_images_to_gif(output_images_dir, output_gif):
-    """Convert a list of images to a gif."""
-
-    image_dir = "{0}/*.png".format(output_images_dir)
-    list_images = glob.glob(image_dir)
-    file_names = sort_nicely(list_images)
-    images = [imageio.imread(fn) for fn in file_names]
-    imageio.mimsave(output_gif, images)
+import utils
 
 
 if __name__ == "__main__":
@@ -86,10 +66,9 @@ if __name__ == "__main__":
     for index in range(num_points):
         G.add_edge(index, (index+1) % num_points)
 
-
     grng = GNG(data, G, max_nodes=47)
     output_images_dir = 'images/example_2'
     output_gif = "output_2.gif"
     if grng is not None:
         grng.train(max_iterations=3000,output_images_dir=output_images_dir)
-        convert_images_to_gif(output_images_dir, output_gif)
+        utils.convert_images_to_gif(output_images_dir, output_gif)
