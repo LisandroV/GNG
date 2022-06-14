@@ -41,9 +41,9 @@ def load_graph_from_file(filename: str) -> nx.Graph:
 
 
 if __name__ == "__main__":
-    G = load_graph_from_file("s.txt")
-    grng = GNG(G)
+    train_G = load_graph_from_file("s.txt")
+    grng = GNG()
     output_images_dir = "images/example_1"
     output_gif = "output_example_1.gif"
-    grng.train(max_iterations=3000, output_images_dir=output_images_dir)
+    grng.train(train_G, max_iterations=3000, output_images_dir=output_images_dir)
     utils.convert_images_to_gif(output_images_dir, output_gif)

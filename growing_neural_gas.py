@@ -12,7 +12,7 @@ class GNG:
 
     def __init__(
         self,
-        data_graph,
+        graph = None,
         eps_b=0.05,
         eps_n=0.0005,
         max_age=25,
@@ -22,8 +22,8 @@ class GNG:
         max_nodes=100,
     ):
         """."""
-        self.graph = nx.Graph()
-        self.data_graph = data_graph
+        self.graph = graph
+        self.train_graph = None
         self.eps_b = eps_b
         self.eps_n = eps_n
         self.max_age = max_age
@@ -32,11 +32,17 @@ class GNG:
         self.d = d
         self.max_nodes = max_nodes
         self.num_of_input_signals = 0
-        self.__init_graph__()
+        self.count = 0
+        if graph is not None:
+            if len(graph.nodes) <= max_nodes:
+                self.count = len(graph.nodes)
+            else:
+                raise Exception("The graph nodes exceedes the max node number")
 
     def __init_graph__(self):
         """Initializes the graph that will fit the data"""
-        train_data_positions = nx.get_node_attributes(self.data_graph, "pos")
+        self.graph = nx.Graph()
+        train_data_positions = nx.get_node_attributes(self.train_graph, "pos")
         node1 = random.choice(list(train_data_positions.values()))
         node2 = random.choice(list(train_data_positions.values()))
 
@@ -148,14 +154,14 @@ class GNG:
 
         return av_dist
 
-    def save_img(self, fignum, output_images_dir="images"):
+    def save_img(self, fignum, output_images_dir="images", image_title="Growing Neural Gas", png_prefix=""):
         """."""
         fig = pl.figure(fignum)
         ax = fig.add_subplot(111)
 
-        pos = nx.get_node_attributes(self.data_graph, "pos")
+        pos = nx.get_node_attributes(self.train_graph, "pos")
         nx.draw(
-            self.data_graph,
+            self.train_graph,
             pos,
             node_color="#ffffff",
             with_labels=False,
@@ -174,30 +180,39 @@ class GNG:
             edge_color="b",
             width=1.5,
         )
-        pl.title("Growing Neural Gas")
-        pl.savefig("{0}/{1}.png".format(output_images_dir, str(fignum)))
+        pl.title(image_title)
+        pl.savefig("{0}/{1}.png".format(output_images_dir, png_prefix + str(fignum)))
 
         pl.clf()
         pl.close(fignum)
 
-    def train(self, max_iterations=10000, output_images_dir="images"):
-        """."""
+    def train(self, train_graph: nx.Graph, max_iterations=10000, output_images_dir:str="images", image_title:str="Growing Neural Gas", png_prefix:str=""):
+        """Training of the network"""
+        self.train_graph = train_graph
+        if self.graph is None:
+            self.__init_graph__()
 
         if not os.path.isdir(output_images_dir):
             os.makedirs(output_images_dir)
 
         print("Ouput images will be saved in: {0}".format(output_images_dir))
         fignum = 0
-        self.save_img(fignum, output_images_dir)
+        self.save_img(fignum, output_images_dir, image_title, png_prefix)
 
         for i in xrange(1, max_iterations):
-            print("Iterating..{0:d}/{1}".format(i, max_iterations))
+
+            # print("Iterating..{0:d}/{1}".format(i, max_iterations))
+            if i%100 == 0:# save image every n iterations
+                fignum += 1
+                print(f"saving image {i}")
+                self.save_img(fignum, output_images_dir, image_title, png_prefix)
+
             # iterates over the (x,y) positions
-            for x in nx.get_node_attributes(self.data_graph, "pos").values():
+            for x in nx.get_node_attributes(self.train_graph, "pos").values():
                 self.update_winner(x)
 
                 # step 8: if number of input signals generated so far
-                if i % self.lambda_ == 0 and len(self.graph.nodes()) <= self.max_nodes:
+                if i % self.lambda_ == 0 and len(self.graph.nodes()) < self.max_nodes:
                     # find a node with the largest error
                     errorvectors = nx.get_node_attributes(self.graph, "error")
                     import operator
@@ -240,9 +255,6 @@ class GNG:
 
                     # initialize the error variable of newnode with max_node
                     self.graph.add_node(newnode, error=error_max_node)
-
-                    fignum += 1
-                    self.save_img(fignum, output_images_dir)
 
                 # step 9: Decrease all error variables
                 errorvectors = nx.get_node_attributes(self.graph, "error")

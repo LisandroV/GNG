@@ -57,10 +57,14 @@ if __name__ == "__main__":
             [239.01339427, 151.4838181],
         ]
     )
-    G = utils.create_polygon_graph(data)
-
-    grng = GNG(G, max_nodes=47)
+    train_G = utils.create_polygon_graph(data)
+    grng = GNG(max_nodes=47)
     output_images_dir = "images/example_2"
     output_gif = "output_example_2.gif"
-    grng.train(max_iterations=3000, output_images_dir=output_images_dir)
+    grng.train(
+        train_G,
+        max_iterations=3000,
+        output_images_dir=output_images_dir,
+        image_title="Polygon"
+    )
     utils.convert_images_to_gif(output_images_dir, output_gif)
