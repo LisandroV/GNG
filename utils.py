@@ -44,4 +44,5 @@ def create_polygon_graph(coords: np.ndarray) -> nx.Graph:
         G.add_edge(index, (index + 1) % num_points)
     return G
 
+
 dict_to_list = lambda dict: [dict[key] for key in dict]

@@ -12,7 +12,7 @@ class GNG:
 
     def __init__(
         self,
-        graph = None,
+        graph=None,
         eps_b=0.05,
         eps_n=0.0005,
         max_age=25,
@@ -186,7 +186,14 @@ class GNG:
         pl.clf()
         pl.close(fignum)
 
-    def train(self, train_graph: nx.Graph, max_iterations=10000, output_images_dir:str="images", image_title:str="Growing Neural Gas", png_prefix:str=""):
+    def train(
+        self,
+        train_graph: nx.Graph,
+        max_iterations=10000,
+        output_images_dir: str = "images",
+        image_title: str = "Growing Neural Gas",
+        png_prefix: str = "",
+    ):
         """Training of the network"""
         self.train_graph = train_graph
         if self.graph is None:
@@ -195,16 +202,15 @@ class GNG:
         if not os.path.isdir(output_images_dir):
             os.makedirs(output_images_dir)
 
-        print("Ouput images will be saved in: {0}".format(output_images_dir))
         fignum = 0
         self.save_img(fignum, output_images_dir, image_title, png_prefix)
 
         for i in xrange(1, max_iterations):
 
             # print("Iterating..{0:d}/{1}".format(i, max_iterations))
-            if i%100 == 0:# save image every n iterations
+            if i % 100 == 0:  # save image every n iterations
                 fignum += 1
-                print(f"saving image {i}")
+                print(f"    saving image {i}")
                 self.save_img(fignum, output_images_dir, image_title, png_prefix)
 
             # iterates over the (x,y) positions

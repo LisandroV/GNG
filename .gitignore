@@ -104,3 +104,4 @@ images
 # mypy
 .mypy_cache/
 *.gif
+*.npy
