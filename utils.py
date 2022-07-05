@@ -3,6 +3,7 @@ import imageio
 import networkx as nx
 import numpy as np
 import re
+import time
 
 
 def sort_nicely(limages):
@@ -43,6 +44,10 @@ def create_polygon_graph(coords: np.ndarray) -> nx.Graph:
     for index in range(num_points):
         G.add_edge(index, (index + 1) % num_points)
     return G
+
+
+def time_id():
+    return time.strftime("%Y_%m_%d-%H_%M_%S")
 
 
 dict_to_list = lambda dict: [dict[key] for key in dict]
