@@ -5,6 +5,8 @@ Implementation of Growing Geural Gas Networks.
 
 In this repo I show two exaples of how GNG is used, and then I use it to analyze the countour of an object in a video to get a constant number of points describing the contour over time.
 
+In this repo I tried to replicate part of the paper from Ana-Maria Cretu __"Deformable Object Segmentation and Contour Tracking in Image Sequences Using Unsupervised Networks"__
+
 Usage:
 ---
 
@@ -21,7 +23,7 @@ Usage:
    python example_1.py
    ```
 
-2. You will see output after 10000 iterations as `output/example_1.gif`.
+2. You will see output after 10000 iterations in `output/example_1/`.
 
    ![](static/example_1.gif)
 
@@ -34,13 +36,13 @@ Usage:
    python example_2.py
    ```
 
-2. You will see output after 10000 iterations as `output/example_2.gif`.
+2. You will see output after 10000 iterations in `output/example_2/`.
 
    ![](static/example_2.gif)
 
 
 # Using GNGN to Analyze Contour Sequences
-The Growing Neural Gas can also be used to analize the contour of a sequence, producing a graph with a constant number of points over time. For example we use it to analyze the following video:
+The Growing Neural Gas can also be used to analize the contour of a sequence, producing a graph with a constant number of points over time. For example we use it to analyze the following video of a dish-washing sponge pushed by a robotic finger:
 
    ![](static/video.gif)
 
@@ -52,7 +54,7 @@ Using opencv in another program we get the points of the contour which is a vari
    python analyze_sequence.py
    ```
 
-2. You will see output after 10000 iterations as `output/sequence_[id]/sequence.gif`.
+2. You will see output after 10000 iterations as `output/sponge_center_[id]/sequence.gif`.
 
    ![](static/sequence_center.gif)
 

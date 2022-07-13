@@ -208,9 +208,9 @@ class GNG:
         for i in xrange(1, max_iterations):
 
             # print("Iterating..{0:d}/{1}".format(i, max_iterations))
-            if i % 100 == 0:  # save image every n iterations
+            if i % 300 == 0:  # save image every n iterations
                 fignum += 1
-                print(f"    saving image {i}")
+                print(f"    saving image for iteration #{i}")
                 self.save_img(fignum, output_images_dir, image_title, png_prefix)
 
             # iterates over the (x,y) positions
