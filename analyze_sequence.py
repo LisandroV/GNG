@@ -6,14 +6,14 @@ from growing_neural_gas import GNG
 import utils
 
 # chose sequence to analyze:
-from video_sequences.sponge_center import polygon_sequence
+from video_sequences.shortside_v2 import polygon_sequence
 
 
 if __name__ == "__main__":
     MAX_NODES = 47
     NUM_ITERATIONS_FIRST_MODEL = 5000
     NUM_ITERATIONS_NEXT_MODELS = 301
-    START_INDEX_POLYGON = 20
+    START_INDEX_POLYGON = 43
     OUTPUT_NAME = "sponge_center"
 
     time_id: str = utils.time_id()
@@ -37,7 +37,6 @@ if __name__ == "__main__":
     if len(new_polygon_sequence[0]) < MAX_NODES:
         raise Exception("Maximum number of nodes was not reached. Needs more training time")
 
-    # analize all polygons before START_INDEX_POLYGON
     gas_G = first_GNG.graph.copy()
     for t in range(START_INDEX_POLYGON - 1, -1, -1):
         print(f"Gas Graph {t}:")

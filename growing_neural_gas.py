@@ -228,7 +228,7 @@ class GNG:
                     # find a node from neighbor of the node just found,
                     # with largest error
                     neighbors = self.graph.neighbors(node_largest_error)
-                    max_error_neighbor = None
+                    max_error_neighbor = 0
                     max_error = -1
                     errorvectors = nx.get_node_attributes(self.graph, "error")
                     for n in neighbors:
